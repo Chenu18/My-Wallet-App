@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101216">
 <title>My Wallet</title>
+  <link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 
 <style>
 :root {
@@ -1105,7 +1107,14 @@ window.addEventListener("scroll",() => {
   },2000);
 },{passive:true});
 
-render();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("Service worker registered"))
+      .catch(error => console.error("Service worker error:", error));
+  });
+}
+  render();
 showPage("dashboard");
 </script>
 
