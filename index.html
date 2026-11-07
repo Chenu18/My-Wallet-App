@@ -1,0 +1,1603 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101010">
+<title>My Wallet</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+
+<style>
+:root {
+  --bg: #101010;
+  --panel: #191919;
+  --panel2: #222222;
+  --border: #303030;
+  --text: #f4f4f4;
+  --muted: #999999;
+  --accent: #ffffff;
+  --green: #65c98b;
+  --red: #ed7777;
+  --blue: #83aaff;
+  --input: #242424;
+}
+
+body.light {
+  --bg: #f2f2f2;
+  --panel: #ffffff;
+  --panel2: #eeeeee;
+  --border: #dddddd;
+  --text: #171717;
+  --muted: #707070;
+  --accent: #171717;
+  --green: #21864b;
+  --red: #c43d3d;
+  --blue: #386acb;
+  --input: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  transition: background .2s, color .2s;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  max-width: 1100px;
+  margin: auto;
+  padding: 22px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.brand {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -.8px;
+}
+
+.theme-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 20px;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 22px;
+}
+
+.nav button {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 11px 17px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.nav button.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  font-weight: 700;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+h2 {
+  font-size: 21px;
+  margin-bottom: 18px;
+}
+
+h3 {
+  font-size: 16px;
+  margin-bottom: 14px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 19px;
+  min-width: 0;
+}
+
+.balance-card {
+  min-height: 125px;
+}
+
+.balance-label {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.balance {
+  font-size: 27px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.total-card {
+  grid-column: 1 / -1;
+  background: var(--panel2);
+}
+
+.total-card .balance {
+  font-size: 32px;
+}
+
+.positive {
+  color: var(--green);
+}
+
+.negative {
+  color: var(--red);
+}
+
+.blue {
+  color: var(--blue);
+}
+
+.section {
+  margin-top: 22px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+input, select, textarea {
+  width: 100%;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 9px;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--muted);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.btn {
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  padding: 12px 17px;
+  border-radius: 9px;
+  font-weight: 700;
+}
+
+.btn.secondary {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn.danger {
+  background: #4a2020;
+  color: #ffaaaa;
+}
+
+.btn.small {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quick-actions button {
+  padding: 15px 8px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.quick-actions button span {
+  display: block;
+  font-size: 21px;
+  margin-bottom: 6px;
+}
+
+.note-row {
+  display: grid;
+  grid-template-columns: 1fr 90px 95px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.note-row input {
+  text-align: center;
+}
+
+.note-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  margin-top: 17px;
+  font-size: 18px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+th, td {
+  text-align: left;
+  padding: 13px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 25px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  background: var(--panel2);
+  padding: 14px;
+  border-radius: 11px;
+}
+
+.stat p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.stat strong {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
+.chart-area {
+  position: relative;
+  height: 270px;
+  width: 100%;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.range-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.range-buttons button {
+  background: var(--panel2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.range-buttons button.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-row p {
+  font-size: 14px;
+}
+
+.setting-row small {
+  color: var(--muted);
+  display: block;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  color: var(--muted);
+  text-align: center;
+  padding: 30px 0 15px;
+  font-size: 12px;
+}
+
+@media(max-width: 600px) {
+  .app {
+    padding: 15px;
+  }
+
+  .brand {
+    font-size: 23px;
+  }
+
+  .balance {
+    font-size: 22px;
+  }
+
+  .total-card .balance {
+    font-size: 27px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .note-row {
+    grid-template-columns: 1fr 75px 85px;
+    font-size: 13px;
+  }
+
+  .quick-actions button {
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div class="brand">My Wallet</div>
+  <button class="theme-btn" id="themeBtn" aria-label="Switch theme">☼</button>
+</header>
+
+<nav class="nav">
+  <button class="active" data-page="overview">Overview</button>
+  <button data-page="cash">Cash</button>
+  <button data-page="bank">Bank</button>
+  <button data-page="records">Records</button>
+  <button data-page="reports">Reports</button>
+  <button data-page="settings">Settings</button>
+</nav>
+
+<!-- OVERVIEW -->
+<section class="page active" id="overview">
+  <h2>Overview</h2>
+
+  <div class="grid">
+    <div class="card total-card">
+      <div class="balance-label">Total Balance</div>
+      <div class="balance" id="totalBalance">LKR 0.00</div>
+    </div>
+
+    <div class="card balance-card">
+      <div class="balance-label">Cash Balance</div>
+      <div class="balance" id="overviewCash">LKR 0.00</div>
+    </div>
+
+    <div class="card balance-card">
+      <div class="balance-label">Bank Balance</div>
+      <div class="balance" id="overviewBank">LKR 0.00</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <button onclick="openTransaction('income')">
+      <span>＋</span>Income
+    </button>
+    <button onclick="openTransaction('expense')">
+      <span>−</span>Expense
+    </button>
+    <button onclick="openTransaction('transfer')">
+      <span>⇄</span>Transfer
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>Recent Transactions</h3>
+    <div id="recentRecords"></div>
+  </div>
+
+  <div class="card section">
+    <h3>This Month</h3>
+    <div class="stat-grid">
+      <div class="stat">
+        <p>Income</p>
+        <strong class="positive" id="monthIncome">0</strong>
+      </div>
+      <div class="stat">
+        <p>Expenses</p>
+        <strong class="negative" id="monthExpense">0</strong>
+      </div>
+      <div class="stat">
+        <p>Net Change</p>
+        <strong id="monthNet">0</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASH -->
+<section class="page" id="cash">
+  <h2>Cash Wallet</h2>
+
+  <div class="card balance-card">
+    <div class="balance-label">Available Cash</div>
+    <div class="balance" id="cashBalance">LKR 0.00</div>
+  </div>
+
+  <div class="card section">
+    <h3>Cash Notes Counter</h3>
+    <p class="muted">Enter the number of notes you currently have.</p>
+    <div id="notesList"></div>
+
+    <div class="note-total">
+      <span>Counted Total</span>
+      <span id="notesTotal">LKR 0.00</span>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="applyCashCount()">Set Cash Balance to Counted Total</button>
+      <button class="btn secondary" onclick="clearNotes()">Clear Counter</button>
+    </div>
+    <p class="muted" style="margin-top:12px">
+      Setting the counted total creates a balance adjustment, not income.
+    </p>
+  </div>
+
+  <div class="card section">
+    <h3>Cash Transactions</h3>
+    <div id="cashRecords"></div>
+  </div>
+</section>
+
+<!-- BANK -->
+<section class="page" id="bank">
+  <h2>Bank Account</h2>
+
+  <div class="card balance-card">
+    <div class="balance-label">Available Bank Balance</div>
+    <div class="balance" id="bankBalance">LKR 0.00</div>
+  </div>
+
+  <div class="card section">
+    <h3>Bank Transactions</h3>
+    <div id="bankRecords"></div>
+  </div>
+</section>
+
+<!-- RECORDS -->
+<section class="page" id="records">
+  <h2>All Records</h2>
+
+  <div class="filters">
+    <input id="searchRecords" placeholder="Search transactions...">
+    <select id="filterType">
+      <option value="all">All Types</option>
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+      <option value="transfer">Transfer</option>
+      <option value="adjustment">Adjustment</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div id="allRecords"></div>
+  </div>
+</section>
+
+<!-- REPORTS -->
+<section class="page" id="reports">
+  <h2>Reports</h2>
+
+  <div class="card">
+    <h3>Balance History</h3>
+    <div class="range-buttons">
+      <button class="active" data-range="7">7 Days</button>
+      <button data-range="30">30 Days</button>
+      <button data-range="90">3 Months</button>
+      <button data-range="180">6 Months</button>
+      <button data-range="365">1 Year</button>
+    </div>
+    <div class="chart-area">
+      <canvas id="balanceChart"></canvas>
+    </div>
+    <p class="muted" id="chartInfo" style="margin-top:10px">
+      Your balance history starts when you begin using My Wallet.
+    </p>
+  </div>
+
+  <div class="card section">
+    <h3>Monthly Summary</h3>
+    <div class="stat-grid">
+      <div class="stat">
+        <p>Total Income</p>
+        <strong class="positive" id="reportIncome">LKR 0</strong>
+      </div>
+      <div class="stat">
+        <p>Total Expenses</p>
+        <strong class="negative" id="reportExpense">LKR 0</strong>
+      </div>
+      <div class="stat">
+        <p>Net Change</p>
+        <strong id="reportNet">LKR 0</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h3>Spending by Category</h3>
+    <div id="categorySummary"></div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <h2>Settings</h2>
+
+  <div class="card">
+    <h3>Opening Balances</h3>
+    <p class="muted">
+      Set the cash and bank balances you already have when starting My Wallet.
+      These are not counted as income.
+    </p>
+
+    <div class="form-grid section">
+      <div class="field">
+        <label>Opening Cash (LKR)</label>
+        <input type="number" id="openingCash" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label>Opening Bank (LKR)</label>
+        <input type="number" id="openingBank" min="0" step="0.01">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" onclick="saveOpeningBalances()">Save Opening Balances</button>
+    </div>
+    <p class="muted" style="margin-top:12px">
+      Opening balances can only be changed before you add transactions.
+    </p>
+  </div>
+
+  <div class="card section">
+    <h3>Data Management</h3>
+
+    <div class="setting-row">
+      <div>
+        <p>Export Backup</p>
+        <small>Download your wallet data as a JSON file.</small>
+      </div>
+      <button class="btn secondary small" onclick="exportData()">Export</button>
+    </div>
+
+    <div class="setting-row">
+      <div>
+        <p>Restore Backup</p>
+        <small>Restore data from a previous backup.</small>
+      </div>
+      <button class="btn secondary small" onclick="document.getElementById('importFile').click()">Restore</button>
+    </div>
+
+    <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+
+    <div class="setting-row">
+      <div>
+        <p>Delete All Data</p>
+        <small>Permanently reset this wallet on this device.</small>
+      </div>
+      <button class="btn danger small" onclick="resetData()">Reset</button>
+    </div>
+  </div>
+
+  <div class="card section">
+    <h3>About My Wallet</h3>
+    <p class="muted">
+      My Wallet is a personal finance tracker. Your wallet data is stored locally
+      in this browser. It does not automatically sync to other devices.
+    </p>
+  </div>
+</section>
+
+<footer>My Wallet · Personal Finance Tracker</footer>
+</div>
+
+<!-- TRANSACTION MODAL -->
+<div id="transactionModal" class="hidden" style="
+position:fixed; inset:0; background:#000b; z-index:10;
+display:none; align-items:center; justify-content:center; padding:15px;">
+  <div class="card" style="width:100%;max-width:480px;max-height:90vh;overflow:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 id="modalTitle" style="margin:0">New Transaction</h2>
+      <button class="btn secondary small" onclick="closeTransaction()">✕</button>
+    </div>
+
+    <form id="transactionForm">
+      <input type="hidden" id="editId">
+
+      <div class="form-grid">
+        <div class="field full">
+          <label>Transaction Type</label>
+          <select id="transactionType">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+            <option value="transfer">Transfer</option>
+            <option value="adjustment">Balance Adjustment</option>
+          </select>
+        </div>
+
+        <div class="field full" id="accountField">
+          <label>Account</label>
+          <select id="transactionAccount">
+            <option value="cash">Cash</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+
+        <div class="field" id="fromField">
+          <label>From</label>
+          <select id="fromAccount">
+            <option value="cash">Cash</option>
+            <option value="bank">Bank</option>
+          </select>
+        </div>
+
+        <div class="field" id="toField">
+          <label>To</label>
+          <select id="toAccount">
+            <option value="bank">Bank</option>
+            <option value="cash">Cash</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>Amount (LKR)</label>
+          <input type="number" id="transactionAmount" min="0.01" step="0.01" required>
+        </div>
+
+        <div class="field full" id="categoryField">
+          <label>Category</label>
+          <select id="transactionCategory">
+            <option>Other</option>
+            <option>Salary</option>
+            <option>Business</option>
+            <option>Gift</option>
+            <option>Food</option>
+            <option>Transport</option>
+            <option>Shopping</option>
+            <option>Education</option>
+            <option>Bills</option>
+            <option>Entertainment</option>
+            <option>Health</option>
+            <option>Personal</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>Date</label>
+          <input type="date" id="transactionDate" required>
+        </div>
+
+        <div class="field full">
+          <label>Description</label>
+          <input type="text" id="transactionNote" placeholder="Optional description">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit" id="saveTransactionBtn">Save Transaction</button>
+        <button class="btn secondary" type="button" onclick="closeTransaction()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = "myWalletData_v1";
+
+const denominations = [5000, 2000, 1000, 500, 100, 50, 20];
+
+let data = {
+  openingCash: 0,
+  openingBank: 0,
+  transactions: [],
+  notes: {},
+  theme: "dark"
+};
+
+let chartRange = 7;
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      data = {
+        ...data,
+        ...parsed,
+        transactions: Array.isArray(parsed.transactions) ? parsed.transactions : [],
+        notes: parsed.notes || {}
+      };
+    }
+  } catch (error) {
+    alert("Could not read saved wallet data.");
+  }
+
+  applyTheme();
+  renderAll();
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function money(value) {
+  return "LKR " + Number(value || 0).toLocaleString("en-LK", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function today() {
+  const d = new Date();
+  return [
+    d.getFullYear(),
+    String(d.getMonth() + 1).padStart(2, "0"),
+    String(d.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function dateValue(date) {
+  return new Date(date + "T12:00:00");
+}
+
+function getBalances() {
+  let cash = Number(data.openingCash) || 0;
+  let bank = Number(data.openingBank) || 0;
+
+  const sorted = [...data.transactions].sort((a, b) =>
+    a.date.localeCompare(b.date) || (a.createdAt || 0) - (b.createdAt || 0)
+  );
+
+  for (const t of sorted) {
+    const amount = Number(t.amount) || 0;
+
+    if (t.type === "income") {
+      if (t.account === "cash") cash += amount;
+      else bank += amount;
+    }
+
+    if (t.type === "expense") {
+      if (t.account === "cash") cash -= amount;
+      else bank -= amount;
+    }
+
+    if (t.type === "transfer") {
+      if (t.from === "cash") cash -= amount;
+      else bank -= amount;
+
+      if (t.to === "cash") cash += amount;
+      else bank += amount;
+    }
+
+    if (t.type === "adjustment") {
+      if (t.account === "cash") cash += amount;
+      else bank += amount;
+    }
+  }
+
+  return { cash, bank, total: cash + bank };
+}
+
+function renderBalances() {
+  const b = getBalances();
+
+  document.getElementById("totalBalance").textContent = money(b.total);
+  document.getElementById("overviewCash").textContent = money(b.cash);
+  document.getElementById("overviewBank").textContent = money(b.bank);
+  document.getElementById("cashBalance").textContent = money(b.cash);
+  document.getElementById("bankBalance").textContent = money(b.bank);
+
+  document.getElementById("openingCash").value = data.openingCash;
+  document.getElementById("openingBank").value = data.openingBank;
+}
+
+function typeLabel(t) {
+  if (t.type === "income") return "Income";
+  if (t.type === "expense") return "Expense";
+  if (t.type === "transfer") return "Transfer";
+  return "Adjustment";
+}
+
+function recordDescription(t) {
+  if (t.type === "transfer") {
+    return `${capitalize(t.from)} → ${capitalize(t.to)}`;
+  }
+  return `${t.category || "Other"} · ${capitalize(t.account || "")}`;
+}
+
+function capitalize(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+}
+
+function signedAmount(t) {
+  if (t.type === "income") return "+" + money(t.amount);
+  if (t.type === "expense") return "-" + money(t.amount);
+  if (t.type === "transfer") return money(t.amount);
+  return (Number(t.amount) >= 0 ? "+" : "") + money(t.amount);
+}
+
+function amountClass(t) {
+  if (t.type === "income" || (t.type === "adjustment" && t.amount >= 0)) return "positive";
+  if (t.type === "expense" || (t.type === "adjustment" && t.amount < 0)) return "negative";
+  return "blue";
+}
+
+function recordHTML(t, showActions = true) {
+  return `
+    <tr>
+      <td>${escapeHTML(t.date)}</td>
+      <td>
+        <strong>${escapeHTML(t.note || typeLabel(t))}</strong>
+        <div class="muted">${escapeHTML(recordDescription(t))}</div>
+      </td>
+      <td>${typeLabel(t)}</td>
+      <td class="${amountClass(t)}">${signedAmount(t)}</td>
+      ${showActions ? `<td>
+        <button class="btn secondary small" onclick="editTransaction('${t.id}')">Edit</button>
+        <button class="btn danger small" onclick="deleteTransaction('${t.id}')">Delete</button>
+      </td>` : ""}
+    </tr>`;
+}
+
+function renderTable(records, showActions = true) {
+  if (!records.length) return `<div class="empty">No transactions yet.</div>`;
+
+  return `
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Amount</th>
+          ${showActions ? "<th>Actions</th>" : ""}
+        </tr>
+      </thead>
+      <tbody>
+        ${records.map(t => recordHTML(t, showActions)).join("")}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function sortedRecords(records = data.transactions) {
+  return [...records].sort((a, b) =>
+    b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0)
+  );
+}
+
+function renderRecords() {
+  const records = sortedRecords();
+
+  document.getElementById("recentRecords").innerHTML =
+    renderTable(records.slice(0, 5), false);
+
+  document.getElementById("allRecords").innerHTML =
+    renderTable(filterRecords(records));
+
+  document.getElementById("cashRecords").innerHTML =
+    renderTable(records.filter(t =>
+      t.account === "cash" || t.from === "cash" || t.to === "cash"
+    ));
+
+  document.getElementById("bankRecords").innerHTML =
+    renderTable(records.filter(t =>
+      t.account === "bank" || t.from === "bank" || t.to === "bank"
+    ));
+}
+
+function filterRecords(records) {
+  const search = (document.getElementById("searchRecords")?.value || "").toLowerCase();
+  const type = document.getElementById("filterType")?.value || "all";
+
+  return records.filter(t => {
+    const text = `${t.note || ""} ${t.category || ""} ${t.account || ""} ${t.from || ""} ${t.to || ""}`.toLowerCase();
+    return text.includes(search) && (type === "all" || t.type === type);
+  });
+}
+
+function renderSummary() {
+  const now = new Date();
+  const month = now.getMonth();
+  const year = now.getFullYear();
+
+  const monthly = data.transactions.filter(t => {
+    const d = dateValue(t.date);
+    return d.getMonth() === month && d.getFullYear() === year;
+  });
+
+  const income = monthly
+    .filter(t => t.type === "income")
+    .reduce((s, t) => s + Number(t.amount), 0);
+
+  const expense = monthly
+    .filter(t => t.type === "expense")
+    .reduce((s, t) => s + Number(t.amount), 0);
+
+  const net = income - expense;
+
+  document.getElementById("monthIncome").textContent = money(income);
+  document.getElementById("monthExpense").textContent = money(expense);
+  document.getElementById("monthNet").textContent = money(net);
+
+  document.getElementById("reportIncome").textContent = money(income);
+  document.getElementById("reportExpense").textContent = money(expense);
+  document.getElementById("reportNet").textContent = money(net);
+
+  const categories = {};
+
+  monthly.filter(t => t.type === "expense").forEach(t => {
+    const category = t.category || "Other";
+    categories[category] = (categories[category] || 0) + Number(t.amount);
+  });
+
+  const entries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+
+  document.getElementById("categorySummary").innerHTML = entries.length
+    ? entries.map(([name, amount]) => `
+      <div class="setting-row">
+        <span>${escapeHTML(name)}</span>
+        <strong>${money(amount)}</strong>
+      </div>`).join("")
+    : `<div class="empty">No expenses recorded this month.</div>`;
+}
+
+function renderNotes() {
+  const container = document.getElementById("notesList");
+
+  container.innerHTML = denominations.map(value => `
+    <div class="note-row">
+      <strong>LKR ${value.toLocaleString("en-LK")}</strong>
+      <input type="number" min="0" step="1" value="${Number(data.notes[value] || 0)}"
+        data-denomination="${value}" aria-label="Number of ${value} rupee notes">
+      <strong id="noteTotal${value}">${money(value * Number(data.notes[value] || 0))}</strong>
+    </div>
+  `).join("");
+
+  container.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", () => {
+      const denomination = Number(input.dataset.denomination);
+      const count = Math.max(0, Math.floor(Number(input.value) || 0));
+      data.notes[denomination] = count;
+      document.getElementById("noteTotal" + denomination).textContent =
+        money(denomination * count);
+      updateNotesTotal();
+      saveData();
+    });
+  });
+
+  updateNotesTotal();
+}
+
+function updateNotesTotal() {
+  const total = denominations.reduce((sum, value) =>
+    sum + value * Number(data.notes[value] || 0), 0
+  );
+
+  document.getElementById("notesTotal").textContent = money(total);
+}
+
+function clearNotes() {
+  if (!confirm("Clear all note counts?")) return;
+  data.notes = {};
+  saveData();
+  renderNotes();
+}
+
+function applyCashCount() {
+  const total = denominations.reduce((sum, value) =>
+    sum + value * Number(data.notes[value] || 0), 0
+  );
+
+  const current = getBalances().cash;
+  const difference = Number((total - current).toFixed(2));
+
+  if (difference === 0) {
+    alert("Your counted cash already matches your wallet balance.");
+    return;
+  }
+
+  if (!confirm(`Create a cash balance adjustment of ${money(difference)}?`)) return;
+
+  data.transactions.push({
+    id: createId(),
+    type: "adjustment",
+    account: "cash",
+    amount: difference,
+    date: today(),
+    category: "Cash count",
+    note: "Cash note count adjustment",
+    createdAt: Date.now()
+  });
+
+  saveData();
+  renderAll();
+  alert("Cash balance adjusted.");
+}
+
+function createId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function openTransaction(type = "income") {
+  document.getElementById("transactionForm").reset();
+  document.getElementById("editId").value = "";
+  document.getElementById("transactionDate").value = today();
+  document.getElementById("transactionType").value = type;
+  document.getElementById("transactionAccount").value = "cash";
+  document.getElementById("fromAccount").value = "cash";
+  document.getElementById("toAccount").value = "bank";
+  document.getElementById("modalTitle").textContent = "New Transaction";
+  document.getElementById("saveTransactionBtn").textContent = "Save Transaction";
+  updateFormFields();
+
+  const modal = document.getElementById("transactionModal");
+  modal.classList.remove("hidden");
+  modal.style.display = "flex";
+}
+
+function closeTransaction() {
+  const modal = document.getElementById("transactionModal");
+  modal.style.display = "none";
+  modal.classList.add("hidden");
+}
+
+function updateFormFields() {
+  const type = document.getElementById("transactionType").value;
+  const isTransfer = type === "transfer";
+  const isAdjustment = type === "adjustment";
+
+  document.getElementById("accountField").classList.toggle("hidden", isTransfer);
+  document.getElementById("fromField").classList.toggle("hidden", !isTransfer);
+  document.getElementById("toField").classList.toggle("hidden", !isTransfer);
+  document.getElementById("categoryField").classList.toggle("hidden", isTransfer);
+
+  if (isAdjustment) {
+    document.querySelector("#categoryField label").textContent = "Adjustment Category";
+  } else {
+    document.querySelector("#categoryField label").textContent = "Category";
+  }
+}
+
+document.getElementById("transactionType").addEventListener("change", updateFormFields);
+
+document.getElementById("transactionForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const id = document.getElementById("editId").value;
+  const type = document.getElementById("transactionType").value;
+  const amount = Number(document.getElementById("transactionAmount").value);
+  const date = document.getElementById("transactionDate").value;
+  const note = document.getElementById("transactionNote").value.trim();
+  const category = document.getElementById("transactionCategory").value;
+
+  if (!Number.isFinite(amount) || amount <= 0 || !date) {
+    alert("Enter a valid amount and date.");
+    return;
+  }
+
+  const transaction = {
+    id: id || createId(),
+    type,
+    amount,
+    date,
+    note,
+    category,
+    createdAt: id
+      ? (data.transactions.find(t => t.id === id)?.createdAt || Date.now())
+      : Date.now()
+  };
+
+  if (type === "transfer") {
+    const from = document.getElementById("fromAccount").value;
+    const to = document.getElementById("toAccount").value;
+
+    if (from === to) {
+      alert("Choose two different accounts for a transfer.");
+      return;
+    }
+
+    transaction.from = from;
+    transaction.to = to;
+  } else {
+    transaction.account = document.getElementById("transactionAccount").value;
+    if (type === "adjustment") {
+      transaction.amount = amount;
+    }
+  }
+
+  if (id) {
+    const index = data.transactions.findIndex(t => t.id === id);
+    if (index !== -1) data.transactions[index] = transaction;
+  } else {
+    data.transactions.push(transaction);
+  }
+
+  saveData();
+  closeTransaction();
+  renderAll();
+});
+
+function editTransaction(id) {
+  const t = data.transactions.find(item => item.id === id);
+  if (!t) return;
+
+  openTransaction(t.type);
+
+  document.getElementById("editId").value = t.id;
+  document.getElementById("transactionType").value = t.type;
+  document.getElementById("transactionAmount").value = Math.abs(t.amount);
+  document.getElementById("transactionDate").value = t.date;
+  document.getElementById("transactionNote").value = t.note || "";
+  document.getElementById("transactionCategory").value = t.category || "Other";
+
+  if (t.type === "transfer") {
+    document.getElementById("fromAccount").value = t.from;
+    document.getElementById("toAccount").value = t.to;
+  } else {
+    document.getElementById("transactionAccount").value = t.account;
+  }
+
+  updateFormFields();
+  document.getElementById("modalTitle").textContent = "Edit Transaction";
+  document.getElementById("saveTransactionBtn").textContent = "Update Transaction";
+}
+
+function deleteTransaction(id) {
+  if (!confirm("Delete this transaction? This will change your balances.")) return;
+
+  data.transactions = data.transactions.filter(t => t.id !== id);
+  saveData();
+  renderAll();
+}
+
+function saveOpeningBalances() {
+  if (data.transactions.length > 0) {
+    alert("Opening balances cannot be changed after transactions have been added. Use a balance adjustment instead.");
+    renderBalances();
+    return;
+  }
+
+  const cash = Number(document.getElementById("openingCash").value);
+  const bank = Number(document.getElementById("openingBank").value);
+
+  if (!Number.isFinite(cash) || !Number.isFinite(bank) || cash < 0 || bank < 0) {
+    alert("Enter valid non-negative opening balances.");
+    return;
+  }
+
+  data.openingCash = cash;
+  data.openingBank = bank;
+  saveData();
+  renderAll();
+  alert("Opening balances saved.");
+}
+
+function renderChart() {
+  const canvas = document.getElementById("balanceChart");
+  const rect = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+
+  canvas.width = Math.max(1, rect.width * ratio);
+  canvas.height = Math.max(1, rect.height * ratio);
+
+  const ctx = canvas.getContext("2d");
+  ctx.scale(ratio, ratio);
+
+  const width = rect.width;
+  const height = rect.height;
+
+  const styles = getComputedStyle(document.body);
+  const textColor = styles.getPropertyValue("--muted").trim();
+  const lineColor = styles.getPropertyValue("--blue").trim();
+  const gridColor = styles.getPropertyValue("--border").trim();
+
+  const end = new Date();
+  end.setHours(12, 0, 0, 0);
+
+  const start = new Date(end);
+  start.setDate(start.getDate() - chartRange + 1);
+
+  const transactions = [...data.transactions].sort((a, b) =>
+    a.date.localeCompare(b.date) || (a.createdAt || 0) - (b.createdAt || 0)
+  );
+
+  const points = [];
+  let cash = Number(data.openingCash) || 0;
+  let bank = Number(data.openingBank) || 0;
+
+  const apply = (t) => {
+    const amount = Number(t.amount) || 0;
+
+    if (t.type === "income") {
+      if (t.account === "cash") cash += amount;
+      else bank += amount;
+    } else if (t.type === "expense") {
+      if (t.account === "cash") cash -= amount;
+      else bank -= amount;
+    } else if (t.type === "transfer") {
+      if (t.from === "cash") cash -= amount;
+      else bank -= amount;
+      if (t.to === "cash") cash += amount;
+      else bank += amount;
+    } else if (t.type === "adjustment") {
+      if (t.account === "cash") cash += amount;
+      else bank += amount;
+    }
+  };
+
+  const startString = [
+    start.getFullYear(),
+    String(start.getMonth() + 1).padStart(2, "0"),
+    String(start.getDate()).padStart(2, "0")
+  ].join("-");
+
+  transactions.filter(t => t.date < startString).forEach(apply);
+
+  for (let i = 0; i < chartRange; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+
+    const key = [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0")
+    ].join("-");
+
+    transactions.filter(t => t.date === key).forEach(apply);
+    points.push({ date: d, value: cash + bank });
+  }
+
+  const values = points.map(p => p.value);
+  let min = Math.min(...values, 0);
+  let max = Math.max(...values, 0);
+
+  if (min === max) {
+    min -= 100;
+    max += 100;
+  }
+
+  const pad = { left: 48, right: 12, top: 15, bottom: 32 };
+  const chartW = width - pad.left - pad.right;
+  const chartH = height - pad.top - pad.bottom;
+
+  const x = i => pad.left + (i / Math.max(1, points.length - 1)) * chartW;
+  const y = v => pad.top + (max - v) / (max - min) * chartH;
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.font = "11px Arial";
+  ctx.fillStyle = textColor;
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = 1;
+
+  for (let i = 0; i <= 4; i++) {
+    const value = min + (max - min) * i / 4;
+    const py = y(value);
+
+    ctx.beginPath();
+    ctx.moveTo(pad.left, py);
+    ctx.lineTo(width - pad.right, py);
+    ctx.stroke();
+
+    ctx.fillText(formatCompact(value), 3, py + 4);
+  }
+
+  ctx.beginPath();
+  points.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(x(i), y(p.value));
+    else ctx.lineTo(x(i), y(p.value));
+  });
+
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  points.forEach((p, i) => {
+    if (i === 0 || i === points.length - 1 ||
+        i % Math.ceil(points.length / 5) === 0) {
+      ctx.beginPath();
+      ctx.arc(x(i), y(p.value), 3, 0, Math.PI * 2);
+      ctx.fillStyle = lineColor;
+      ctx.fill();
+    }
+  });
+
+  const labelIndexes = [0, Math.floor((points.length - 1) / 2), points.length - 1];
+
+  labelIndexes.forEach(i => {
+    const label = points[i].date.toLocaleDateString("en-LK", {
+      day: "numeric",
+      month: "short"
+    });
+    ctx.fillStyle = textColor;
+    ctx.fillText(label, x(i) - 15, height - 8);
+  });
+
+  const hasRecords = data.transactions.some(t => t.date >= startString);
+  document.getElementById("chartInfo").textContent = hasRecords
+    ? "Shows your estimated total balance based on your recorded transactions."
+    : "No transactions in this period. Your opening balance is shown where available.";
+}
+
+function formatCompact(value) {
+  const abs = Math.abs(value);
+  if (abs >= 1000000) return (value / 1000000).toFixed(1) + "M";
+  if (abs >= 1000) return (value / 1000).toFixed(1) + "K";
+  return value.toFixed(0);
+}
+
+document.querySelectorAll("[data-range]").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-range]").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    chartRange = Number(button.dataset.range);
+    renderChart();
+  });
+});
+
+function renderAll() {
+  renderBalances();
+  renderRecords();
+  renderSummary();
+  renderNotes();
+  renderChart();
+}
+
+document.querySelectorAll(".nav button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+
+    button.classList.add("active");
+    document.getElementById(button.dataset.page).classList.add("active");
+
+    if (button.dataset.page === "reports") {
+      setTimeout(renderChart, 50);
+    }
+  });
+});
+
+document.getElementById("searchRecords").addEventListener("input", renderRecords);
+document.getElementById("filterType").addEventListener("change", renderRecords);
+
+document.getElementById("themeBtn").addEventListener("click", () => {
+  data.theme = data.theme === "dark" ? "light" : "dark";
+  applyTheme();
+  saveData();
+  renderChart();
+});
+
+function applyTheme() {
+  document.body.classList.toggle("light", data.theme === "light");
+  document.getElementById("themeBtn").textContent =
+    data.theme === "light" ? "☾" : "☼";
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "my-wallet-backup-" + today() + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById("importFile").addEventListener("change", async function() {
+  const file = this.files[0];
+  if (!file) return;
+
+  try {
+    const imported = JSON.parse(await file.text());
+
+    if (
+      !imported ||
+      !Array.isArray(imported.transactions) ||
+      !Number.isFinite(Number(imported.openingCash)) ||
+      !Number.isFinite(Number(imported.openingBank))
+    ) {
+      throw new Error("Invalid backup file");
+    }
+
+    if (!confirm("Restore this backup? Your current wallet data will be replaced.")) {
+      this.value = "";
+      return;
+    }
+
+    data = {
+      openingCash: Number(imported.openingCash),
+      openingBank: Number(imported.openingBank),
+      transactions: imported.transactions,
+      notes: imported.notes || {},
+      theme: imported.theme === "light" ? "light" : "dark"
+    };
+
+    saveData();
+    renderAll();
+    alert("Backup restored successfully.");
+  } catch (error) {
+    alert("Could not restore this file. Please select a valid My Wallet backup.");
+  }
+
+  this.value = "";
+});
+
+function resetData() {
+  if (!confirm("Are you sure? This will permanently delete all wallet data stored in this browser.")) return;
+  if (!confirm("Final confirmation: delete all balances and transactions?")) return;
+
+  data = {
+    openingCash: 0,
+    openingBank: 0,
+    transactions: [],
+    notes: {},
+    theme: "dark"
+  };
+
+  saveData();
+  renderAll();
+  applyTheme();
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+window.addEventListener("resize", () => {
+  renderChart();
+});
+
+loadData();
+</script>
+</body>
+</html>
