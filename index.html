@@ -327,7 +327,7 @@ dialog::backdrop { background:#000b; }
 <section id="cash" class="page hidden">
   <div class="card">
     <h2>Cash note counter</h2>
-    <p class="muted small">This calculator does not change your wallet balance.</p>
+    <p class="muted small">Enter your notes to update your actual cash balance automatically.</p>
     <div class="note-grid" id="noteGrid"></div>
     <h2 style="margin-top:20px">Total: <span id="noteTotal">LKR 0.00</span></h2>
     <button onclick="clearNotes()">Clear counts</button>
@@ -781,8 +781,9 @@ function renderNotes() {
 
 function updateNoteTotal() {
   const total = NOTE_VALUES.reduce((sum,value) =>
-    sum+value*number(data.notes[value]),0
+    sum + value * number(data.notes[value]), 0
   );
+
   document.getElementById("noteTotal").textContent = money(total);
 }
 
@@ -963,17 +964,59 @@ document.getElementById("filterType").addEventListener("change",renderTransactio
 document.getElementById("graphPeriod").addEventListener("change",drawChart);
 window.addEventListener("resize",drawChart);
 
-document.getElementById("noteGrid").addEventListener("input",event => {
+document.getElementById("noteGrid").addEventListener("input", event => {
   const input = event.target.closest("[data-note]");
   if (!input) return;
 
-  data.notes[input.dataset.note] = Math.max(0,Math.floor(number(input.value)));
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-  updateNoteTotal();
+  data.notes[input.dataset.note] = Math.max(
+    0,
+    Math.floor(number(input.value))
+  );
+
+  const total = NOTE_VALUES.reduce((sum, value) =>
+    sum + value * number(data.notes[value]), 0
+  );
+
+  // Find the existing cash-count adjustment.
+  let adjustment = data.transactions.find(
+    tx => tx.id === "cash-note-count"
+  );
+
+  // Create it if it does not exist.
+  if (!adjustment) {
+    adjustment = {
+      id: "cash-note-count",
+      type: "adjustment",
+      amount: total,
+      account: "cash",
+      toAccount: "",
+      category: "Cash count",
+      description: "Cash note count",
+      date: today(),
+      created: Date.now()
+    };
+
+    data.transactions.push(adjustment);
+  } else {
+    // Update the existing adjustment instead of creating duplicates.
+    adjustment.amount = total;
+    adjustment.date = today();
+    adjustment.created = Date.now();
+  }
+
+  saveData();
 });
 
 function clearNotes() {
+  if (!confirm("Clear all cash note counts?")) return;
+
   data.notes = {};
+
+  // Remove the cash-count adjustment.
+  data.transactions = data.transactions.filter(
+    tx => tx.id !== "cash-note-count"
+  );
+
   saveData();
 }
 
