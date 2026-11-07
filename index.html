@@ -1008,6 +1008,11 @@ document.getElementById("noteGrid").addEventListener("input", event => {
 
   // Save without refreshing the input fields.
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  console.log("Cash count adjustment:",
+  data.transactions.find(tx => tx.id === "cash-note-count")
+);
+
+console.log("Calculated balances:", balances());
 
   updateNoteTotal();
   renderBalances();
