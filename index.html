@@ -546,14 +546,18 @@ function today() {
 
 function balances() {
   const result = {
-    cash:number(data.opening.cash),
-    bank:number(data.opening.bank)
+    cash: number(data.opening.cash),
+    bank: number(data.opening.bank)
   };
 
-  const sorted = [...data.transactions].sort((a,b) =>
-    (a.date || "").localeCompare(b.date || "") ||
-    number(a.created)-number(b.created)
-  );
+  const currentDate = today();
+
+  const sorted = [...data.transactions]
+    .filter(tx => (tx.date || "") <= currentDate)
+    .sort((a, b) =>
+      (a.date || "").localeCompare(b.date || "") ||
+      number(a.created) - number(b.created)
+    );
 
   sorted.forEach(tx => {
     const amount = number(tx.amount);
@@ -571,6 +575,7 @@ function balances() {
   });
 
   return result;
+}
 }
 
 function renderBalances() {
