@@ -977,12 +977,10 @@ document.getElementById("noteGrid").addEventListener("input", event => {
     sum + value * number(data.notes[value]), 0
   );
 
-  // Find the existing cash-count adjustment.
   let adjustment = data.transactions.find(
     tx => tx.id === "cash-note-count"
   );
 
-  // Create it if it does not exist.
   if (!adjustment) {
     adjustment = {
       id: "cash-note-count",
@@ -998,16 +996,32 @@ document.getElementById("noteGrid").addEventListener("input", event => {
 
     data.transactions.push(adjustment);
   } else {
-    // Update the existing adjustment instead of creating duplicates.
     adjustment.amount = total;
     adjustment.date = today();
     adjustment.created = Date.now();
   }
 
-  saveData();
+  // Save without refreshing the input fields.
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+  updateNoteTotal();
+  renderBalances();
+  renderSummary();
+  renderTransactions();
+  drawChart();
 });
 
 function clearNotes() {
+  if (!confirm("Clear all cash note counts?")) return;
+
+  data.notes = {};
+
+  data.transactions = data.transactions.filter(
+    tx => tx.id !== "cash-note-count"
+  );
+
+  saveData();
+} {
   if (!confirm("Clear all cash note counts?")) return;
 
   data.notes = {};
