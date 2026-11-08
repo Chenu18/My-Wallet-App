@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "my-wallet-v1";
+const CACHE_NAME = "my-wallet-v2";
 
 const FILES_TO_CACHE = [
   "./",
@@ -10,8 +10,11 @@ const FILES_TO_CACHE = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(cache =>
+      cache.addAll(FILES_TO_CACHE)
+    )
   );
+
   self.skipWaiting();
 });
 
@@ -20,28 +23,60 @@ self.addEventListener("activate", event => {
     caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter(key => key !== CACHE_NAME)
+          .filter(key =>
+            key.startsWith("my-wallet-") && key !== CACHE_NAME
+          )
           .map(key => caches.delete(key))
       )
     )
   );
+
   self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
+  const request = event.request;
 
+  if (request.method !== "GET") return;
+
+  // Always check the network first for page navigation.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME).then(cache =>
+            cache.put("./index.html", copy)
+          );
+
+          return response;
+        })
+        .catch(async () => {
+          return await caches.match("./index.html");
+        })
+    );
+
+    return;
+  }
+
+  // Only cache requests from this website.
+  if (new URL(request.url).origin !== self.location.origin) return;
+
+  // Use cached files when available; otherwise fetch them.
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(request).then(cached => {
       if (cached) return cached;
 
-      return fetch(event.request).then(response => {
-        if (response && response.status === 200) {
+      return fetch(request).then(response => {
+        if (response && response.ok) {
           const copy = response.clone();
+
           caches.open(CACHE_NAME).then(cache =>
-            cache.put(event.request, copy)
+            cache.put(request, copy)
           );
         }
+
         return response;
       });
     })
