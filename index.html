@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101216">
 <title>My Wallet</title>
-  <link rel="manifest" href="./manifest.json">
+
+<link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 
 <style>
@@ -20,13 +22,16 @@
   --green:#55c99a;
   --red:#ff7777;
 }
+
 * { box-sizing:border-box; }
+
 body {
   margin:0;
   background:var(--bg);
   color:var(--text);
-  font-family:Arial, sans-serif;
+  font-family:Arial,sans-serif;
 }
+
 body.light {
   --bg:#f2f4f7;
   --panel:#ffffff;
@@ -35,6 +40,7 @@ body.light {
   --muted:#647184;
   --border:#dce2ea;
 }
+
 header {
   display:flex;
   justify-content:space-between;
@@ -43,8 +49,14 @@ header {
   max-width:1100px;
   margin:auto;
 }
-header h1 { font-size:25px; margin:0; }
+
+header h1 {
+  font-size:25px;
+  margin:0;
+}
+
 button,input,select { font:inherit; }
+
 button {
   border:1px solid var(--border);
   background:var(--panel2);
@@ -53,32 +65,39 @@ button {
   border-radius:10px;
   cursor:pointer;
 }
+
 button.primary {
   background:var(--accent);
   color:#101216;
   border:0;
   font-weight:bold;
 }
+
 button.danger { color:var(--red); }
 button:active { opacity:.75; }
+
 .container {
   max-width:1100px;
   margin:auto;
   padding:0 18px 100px;
 }
+
 nav {
   display:flex;
   gap:8px;
   overflow-x:auto;
   padding:10px 0 18px;
 }
+
 nav button { white-space:nowrap; }
 nav button.active { border-color:var(--accent); }
+
 .grid {
   display:grid;
   grid-template-columns:repeat(12,1fr);
   gap:14px;
 }
+
 .card {
   background:var(--panel);
   border:1px solid var(--border);
@@ -86,29 +105,35 @@ nav button.active { border-color:var(--accent); }
   padding:18px;
   min-width:0;
 }
+
 .col-4 { grid-column:span 4; }
 .col-6 { grid-column:span 6; }
 .col-8 { grid-column:span 8; }
 .col-12 { grid-column:span 12; }
+
 .card h3 {
   color:var(--muted);
   font-size:14px;
   margin:0 0 8px;
 }
+
 .balance {
   font-size:27px;
   font-weight:bold;
   overflow-wrap:anywhere;
 }
+
 .green { color:var(--green); }
 .red { color:var(--red); }
 .muted { color:var(--muted); }
 .small { font-size:13px; }
+
 .actions {
   display:flex;
   flex-wrap:wrap;
   gap:8px;
 }
+
 input,select {
   width:100%;
   background:var(--bg);
@@ -118,18 +143,26 @@ input,select {
   padding:11px;
   outline:none;
 }
+
+input:focus,select:focus {
+  border-color:var(--accent);
+}
+
 label {
   display:block;
   color:var(--muted);
   font-size:13px;
   margin-bottom:5px;
 }
+
 .field { margin-bottom:13px; }
+
 .form-grid {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
 }
+
 .transaction {
   display:flex;
   justify-content:space-between;
@@ -138,28 +171,49 @@ label {
   padding:13px 0;
   border-bottom:1px solid var(--border);
 }
+
 .transaction:last-child { border-bottom:0; }
+
 .tx-description { font-weight:bold; }
-.tx-meta { color:var(--muted); font-size:12px; margin-top:4px; }
+.tx-meta {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
 .tx-right { text-align:right; }
-.tx-buttons { display:flex; gap:5px; margin-top:6px; }
-.tx-buttons button { padding:5px 8px; font-size:12px; }
+
+.tx-buttons {
+  display:flex;
+  gap:5px;
+  margin-top:6px;
+}
+
+.tx-buttons button {
+  padding:5px 8px;
+  font-size:12px;
+}
+
 .hidden { display:none !important; }
 .page { display:block; }
+
 .empty {
   text-align:center;
   padding:25px;
   color:var(--muted);
 }
+
 canvas {
   width:100%;
   height:230px;
 }
+
 .note-grid {
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
 }
+
 .note {
   background:var(--panel2);
   border:1px solid var(--border);
@@ -167,7 +221,9 @@ canvas {
   border-radius:10px;
   text-align:center;
 }
+
 .note input { text-align:center; }
+
 dialog {
   background:var(--panel);
   color:var(--text);
@@ -178,20 +234,25 @@ dialog {
   max-height:90vh;
   overflow:auto;
 }
+
 dialog::backdrop { background:#000b; }
+
 .dialog-head {
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:18px;
 }
+
 .dashboard-option {
   display:flex;
   align-items:center;
   gap:10px;
   margin:12px 0;
 }
+
 .dashboard-option input { width:auto; }
+
 .download-float {
   position:fixed;
   right:18px;
@@ -202,17 +263,20 @@ dialog::backdrop { background:#000b; }
   pointer-events:none;
   transition:.2s;
 }
+
 .download-float.visible {
   opacity:1;
   transform:translateY(0);
   pointer-events:auto;
 }
+
 .footer {
   text-align:center;
   color:var(--muted);
   font-size:12px;
   padding:25px 0;
 }
+
 @media(max-width:700px) {
   .col-4,.col-6,.col-8 { grid-column:span 12; }
   .note-grid { grid-template-columns:repeat(2,1fr); }
@@ -309,6 +373,7 @@ dialog::backdrop { background:#000b; }
       <h2>Transactions</h2>
       <button class="primary" onclick="openTransaction('income')">Add transaction</button>
     </div>
+
     <div class="form-grid">
       <input id="searchTransactions" placeholder="Search transactions">
       <select id="filterType">
@@ -319,6 +384,7 @@ dialog::backdrop { background:#000b; }
         <option value="adjustment">Adjustment</option>
       </select>
     </div>
+
     <div id="allTransactions"></div>
   </div>
 </section>
@@ -327,9 +393,17 @@ dialog::backdrop { background:#000b; }
 <section id="cash" class="page hidden">
   <div class="card">
     <h2>Cash note counter</h2>
-    <p class="muted small">Enter your notes to update your actual cash balance automatically.</p>
+    <p class="muted small">
+      Enter the number of notes you physically have.
+      Your cash balance will automatically be set to the counted total.
+    </p>
+
     <div class="note-grid" id="noteGrid"></div>
-    <h2 style="margin-top:20px">Total: <span id="noteTotal">LKR 0.00</span></h2>
+
+    <h2 style="margin-top:20px">
+      Total: <span id="noteTotal">LKR 0.00</span>
+    </h2>
+
     <button onclick="clearNotes()">Clear counts</button>
   </div>
 </section>
@@ -340,6 +414,7 @@ dialog::backdrop { background:#000b; }
 
     <div class="card col-6">
       <h2>Appearance</h2>
+
       <div class="field">
         <label>Theme</label>
         <select id="themeMode">
@@ -348,14 +423,17 @@ dialog::backdrop { background:#000b; }
           <option value="system">System</option>
         </select>
       </div>
+
       <div class="field">
         <label>Accent colour</label>
         <input type="color" id="accentColor">
       </div>
+
       <div class="field">
         <label>Custom app name</label>
         <input id="customName" maxlength="28">
       </div>
+
       <button class="primary" onclick="saveAppearance()">Save appearance</button>
     </div>
 
@@ -367,27 +445,35 @@ dialog::backdrop { background:#000b; }
     <div class="card col-12">
       <h2>Opening balances</h2>
       <p class="muted small">These balances are not counted as income.</p>
+
       <div class="form-grid">
         <div class="field">
           <label>Cash balance (LKR)</label>
-          <input type="number" id="openingCash" min="0">
+          <input type="number" id="openingCash" min="0" step="0.01">
         </div>
+
         <div class="field">
           <label>Bank balance (LKR)</label>
-          <input type="number" id="openingBank" min="0">
+          <input type="number" id="openingBank" min="0" step="0.01">
         </div>
       </div>
+
       <button class="primary" onclick="saveOpeningBalances()">Save balances</button>
     </div>
 
     <div class="card col-12">
       <h2>Backup and restore</h2>
+
       <div class="actions">
         <button onclick="exportBackup()">Download backup</button>
         <button onclick="document.getElementById('importFile').click()">Restore backup</button>
-        <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+
+        <input type="file" id="importFile"
+          accept=".json,application/json" class="hidden">
+
         <button class="danger" onclick="resetWallet()">Reset wallet</button>
       </div>
+
       <p class="muted small">
         Your wallet data is stored in this browser on this device.
         Keep a backup before changing devices or browsers.
@@ -406,6 +492,7 @@ dialog::backdrop { background:#000b; }
 
 <!-- TRANSACTION DIALOG -->
 <dialog id="transactionDialog">
+
   <div class="dialog-head">
     <h2 id="dialogTitle">Add transaction</h2>
     <button onclick="closeTransaction()">×</button>
@@ -415,6 +502,7 @@ dialog::backdrop { background:#000b; }
     <input type="hidden" id="editId">
 
     <div class="form-grid">
+
       <div class="field">
         <label>Type</label>
         <select id="transactionType">
@@ -460,6 +548,7 @@ dialog::backdrop { background:#000b; }
         <label>Description</label>
         <input id="description" placeholder="Description">
       </div>
+
     </div>
 
     <p class="muted small hidden" id="adjustmentHint">
@@ -470,11 +559,16 @@ dialog::backdrop { background:#000b; }
       <button type="button" onclick="closeTransaction()">Cancel</button>
       <button type="submit" class="primary">Save transaction</button>
     </div>
+
   </form>
 </dialog>
 
 <script>
 "use strict";
+
+/* =========================
+   DATA AND STORAGE
+========================= */
 
 const STORAGE_KEY = "my_wallet_complete_v1";
 const NOTE_VALUES = [5000,2000,1000,500,100,50,20];
@@ -482,10 +576,19 @@ const NOTE_VALUES = [5000,2000,1000,500,100,50,20];
 const defaults = () => ({
   opening:{cash:0,bank:0},
   transactions:[],
-  settings:{theme:"dark",accent:"#72a7ff",name:"My Wallet"},
+  settings:{
+    theme:"dark",
+    accent:"#72a7ff",
+    name:"My Wallet"
+  },
   dashboard:{
-    total:true,cash:true,bank:true,actions:true,
-    graph:true,summary:true,recent:true
+    total:true,
+    cash:true,
+    bank:true,
+    actions:true,
+    graph:true,
+    summary:true,
+    recent:true
   },
   notes:{}
 });
@@ -497,26 +600,59 @@ let scrollTimer = null;
 function loadData() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
     if (!saved) return defaults();
+
     const base = defaults();
+
     return {
       ...base,
       ...saved,
-      opening:{...base.opening,...saved.opening},
-      settings:{...base.settings,...saved.settings},
-      dashboard:{...base.dashboard,...saved.dashboard},
-      notes:{...base.notes,...saved.notes},
-      transactions:Array.isArray(saved.transactions) ? saved.transactions : []
+
+      opening:{
+        ...base.opening,
+        ...saved.opening
+      },
+
+      settings:{
+        ...base.settings,
+        ...saved.settings
+      },
+
+      dashboard:{
+        ...base.dashboard,
+        ...saved.dashboard
+      },
+
+      notes:{
+        ...base.notes,
+        ...saved.notes
+      },
+
+      transactions:Array.isArray(saved.transactions)
+        ? saved.transactions
+        : []
     };
-  } catch {
+
+  } catch(error) {
+    console.error("Loading error:",error);
     return defaults();
   }
 }
 
 function saveData() {
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
-  render();
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+    render();
+  } catch(error) {
+    alert("Could not save your data. Check browser storage.");
+    console.error(error);
+  }
 }
+
+/* =========================
+   GENERAL HELPERS
+========================= */
 
 function money(value) {
   return "LKR " + Number(value || 0).toLocaleString("en-LK",{
@@ -531,32 +667,52 @@ function number(value) {
 }
 
 function makeId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2);
 }
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g,char => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   })[char]);
 }
 
+/* Local date, not UTC.
+   This is important for Sri Lanka's time zone. */
 function today() {
-  return new Date().toISOString().slice(0,10);
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth()+1).padStart(2,"0");
+  const day = String(date.getDate()).padStart(2,"0");
+
+  return `${year}-${month}-${day}`;
 }
+
+/* =========================
+   BALANCE CALCULATION
+========================= */
 
 function balances() {
   const result = {
-    cash: number(data.opening.cash),
-    bank: number(data.opening.bank)
+    cash:number(data.opening.cash),
+    bank:number(data.opening.bank)
   };
 
   const currentDate = today();
 
   const sorted = [...data.transactions]
-    .filter(tx => (tx.date || "") <= currentDate)
-    .sort((a, b) =>
+    .filter(tx => {
+      return tx.date &&
+        tx.date <= currentDate &&
+        ["cash","bank"].includes(tx.account);
+    })
+    .sort((a,b) =>
       (a.date || "").localeCompare(b.date || "") ||
-      number(a.created) - number(b.created)
+      number(a.created)-number(b.created)
     );
 
   sorted.forEach(tx => {
@@ -564,46 +720,81 @@ function balances() {
 
     if (tx.type === "income") {
       result[tx.account] += amount;
-    } else if (tx.type === "expense") {
+    }
+
+    else if (tx.type === "expense") {
       result[tx.account] -= amount;
-    } else if (tx.type === "transfer") {
+    }
+
+    else if (tx.type === "transfer") {
+      if (!["cash","bank"].includes(tx.toAccount)) return;
+
       result[tx.account] -= amount;
       result[tx.toAccount] += amount;
-    } else if (tx.type === "adjustment") {
+    }
+
+    else if (tx.type === "adjustment") {
       result[tx.account] = amount;
     }
   });
 
   return result;
 }
-}
+
+/* =========================
+   DASHBOARD
+========================= */
 
 function renderBalances() {
   const b = balances();
-  document.getElementById("cashBalance").textContent = money(b.cash);
-  document.getElementById("bankBalance").textContent = money(b.bank);
-  document.getElementById("totalBalance").textContent = money(b.cash+b.bank);
 
-  document.getElementById("openingCash").value = data.opening.cash;
-  document.getElementById("openingBank").value = data.opening.bank;
+  document.getElementById("cashBalance").textContent =
+    money(b.cash);
+
+  document.getElementById("bankBalance").textContent =
+    money(b.bank);
+
+  document.getElementById("totalBalance").textContent =
+    money(b.cash+b.bank);
+
+  document.getElementById("openingCash").value =
+    data.opening.cash;
+
+  document.getElementById("openingBank").value =
+    data.opening.bank;
 }
 
 function renderSummary() {
   const month = today().slice(0,7);
+
   let income = 0;
   let expense = 0;
 
   data.transactions.forEach(tx => {
-    if ((tx.date || "").startsWith(month)) {
-      if (tx.type === "income") income += number(tx.amount);
-      if (tx.type === "expense") expense += number(tx.amount);
+    if (!(tx.date || "").startsWith(month)) return;
+
+    if (tx.type === "income") {
+      income += number(tx.amount);
+    }
+
+    if (tx.type === "expense") {
+      expense += number(tx.amount);
     }
   });
 
-  document.getElementById("monthIncome").textContent = money(income);
-  document.getElementById("monthExpense").textContent = money(expense);
-  document.getElementById("monthNet").textContent = money(income-expense);
+  document.getElementById("monthIncome").textContent =
+    money(income);
+
+  document.getElementById("monthExpense").textContent =
+    money(expense);
+
+  document.getElementById("monthNet").textContent =
+    money(income-expense);
 }
+
+/* =========================
+   TRANSACTION DISPLAY
+========================= */
 
 function transactionHTML(tx) {
   let amount = money(tx.amount);
@@ -612,14 +803,20 @@ function transactionHTML(tx) {
   if (tx.type === "income") {
     amount = "+" + amount;
     amountClass = "green";
-  } else if (tx.type === "expense") {
+  }
+
+  else if (tx.type === "expense") {
     amount = "−" + amount;
     amountClass = "red";
-  } else if (tx.type === "adjustment") {
+  }
+
+  else if (tx.type === "adjustment") {
     amount = "Set to " + amount;
   }
 
-  const typeName = tx.type.charAt(0).toUpperCase()+tx.type.slice(1);
+  const typeName =
+    tx.type.charAt(0).toUpperCase()+tx.type.slice(1);
+
   const label = tx.type === "transfer"
     ? "Transfer · " + tx.account + " to " + tx.toAccount
     : typeName + (tx.category ? " · " + tx.category : "");
@@ -627,14 +824,29 @@ function transactionHTML(tx) {
   return `
     <div class="transaction">
       <div>
-        <div class="tx-description">${safeText(tx.description || tx.category || typeName)}</div>
-        <div class="tx-meta">${safeText(tx.date)} · ${safeText(label)}</div>
+        <div class="tx-description">
+          ${safeText(tx.description || tx.category || typeName)}
+        </div>
+
+        <div class="tx-meta">
+          ${safeText(tx.date)} · ${safeText(label)}
+        </div>
       </div>
+
       <div class="tx-right">
-        <div class="${amountClass}">${safeText(amount)}</div>
+        <div class="${amountClass}">
+          ${safeText(amount)}
+        </div>
+
         <div class="tx-buttons">
-          <button onclick="editTransaction('${safeText(tx.id)}')">Edit</button>
-          <button class="danger" onclick="deleteTransaction('${safeText(tx.id)}')">Delete</button>
+          <button onclick="editTransaction('${safeText(tx.id)}')">
+            Edit
+          </button>
+
+          <button class="danger"
+            onclick="deleteTransaction('${safeText(tx.id)}')">
+            Delete
+          </button>
         </div>
       </div>
     </div>
@@ -651,14 +863,24 @@ function renderTransactions() {
     sorted.slice(0,5).map(transactionHTML).join("") ||
     '<div class="empty">No transactions yet.</div>';
 
-  const query = document.getElementById("searchTransactions").value.toLowerCase();
-  const filter = document.getElementById("filterType").value;
+  const query =
+    document.getElementById("searchTransactions").value.toLowerCase();
+
+  const filter =
+    document.getElementById("filterType").value;
 
   const filtered = sorted.filter(tx => {
-    const matchesType = filter === "all" || tx.type === filter;
+    const matchesType =
+      filter === "all" || tx.type === filter;
+
     const text = [
-      tx.description,tx.category,tx.account,tx.toAccount,tx.date
+      tx.description,
+      tx.category,
+      tx.account,
+      tx.toAccount,
+      tx.date
     ].join(" ").toLowerCase();
+
     return matchesType && text.includes(query);
   });
 
@@ -666,6 +888,10 @@ function renderTransactions() {
     filtered.map(transactionHTML).join("") ||
     '<div class="empty">No matching transactions.</div>';
 }
+
+/* =========================
+   BALANCE GRAPH
+========================= */
 
 function historyPoints(days) {
   if (!data.transactions.length) return [];
@@ -678,13 +904,22 @@ function historyPoints(days) {
   start.setHours(0,0,0,0);
 
   const points = [];
+
   const sorted = [...data.transactions].sort((a,b) =>
     (a.date || "").localeCompare(b.date || "") ||
     number(a.created)-number(b.created)
   );
 
-  for (let date = new Date(start); date <= end; date.setDate(date.getDate()+1)) {
-    const key = date.toISOString().slice(0,10);
+  for (
+    let date = new Date(start);
+    date <= end;
+    date.setDate(date.getDate()+1)
+  ) {
+    const key =
+      date.getFullYear()+"-"+
+      String(date.getMonth()+1).padStart(2,"0")+"-"+
+      String(date.getDate()).padStart(2,"0");
+
     const b = {
       cash:number(data.opening.cash),
       bank:number(data.opening.bank)
@@ -692,26 +927,45 @@ function historyPoints(days) {
 
     sorted.forEach(tx => {
       if ((tx.date || "") > key) return;
+      if (!["cash","bank"].includes(tx.account)) return;
 
       const amount = number(tx.amount);
 
-      if (tx.type === "income") b[tx.account] += amount;
-      if (tx.type === "expense") b[tx.account] -= amount;
+      if (tx.type === "income") {
+        b[tx.account] += amount;
+      }
+
+      if (tx.type === "expense") {
+        b[tx.account] -= amount;
+      }
+
       if (tx.type === "transfer") {
+        if (!["cash","bank"].includes(tx.toAccount)) return;
+
         b[tx.account] -= amount;
         b[tx.toAccount] += amount;
       }
-      if (tx.type === "adjustment") b[tx.account] = amount;
+
+      if (tx.type === "adjustment") {
+        b[tx.account] = amount;
+      }
     });
 
-    points.push({date:key,value:b.cash+b.bank});
+    points.push({
+      date:key,
+      value:b.cash+b.bank
+    });
   }
 
   return points;
 }
 
 function drawChart() {
-  const canvas = document.getElementById("balanceChart");
+  const canvas =
+    document.getElementById("balanceChart");
+
+  if (!canvas) return;
+
   const ctx = canvas.getContext("2d");
   const width = canvas.clientWidth || 300;
   const height = 230;
@@ -719,20 +973,36 @@ function drawChart() {
 
   canvas.width = width*ratio;
   canvas.height = height*ratio;
-  ctx.scale(ratio,ratio);
 
-  const points = historyPoints(number(document.getElementById("graphPeriod").value));
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+
+  const points = historyPoints(
+    number(document.getElementById("graphPeriod").value)
+  );
+
   ctx.clearRect(0,0,width,height);
 
-  const muted = getComputedStyle(document.body).getPropertyValue("--muted");
-  const border = getComputedStyle(document.body).getPropertyValue("--border");
-  const accent = getComputedStyle(document.body).getPropertyValue("--accent");
+  const muted =
+    getComputedStyle(document.body)
+      .getPropertyValue("--muted");
+
+  const border =
+    getComputedStyle(document.body)
+      .getPropertyValue("--border");
+
+  const accent =
+    getComputedStyle(document.body)
+      .getPropertyValue("--accent");
 
   if (!points.length) {
     ctx.fillStyle = muted;
     ctx.textAlign = "center";
     ctx.font = "14px Arial";
-    ctx.fillText("Add transactions to see your history",width/2,height/2);
+    ctx.fillText(
+      "Add transactions to see your history",
+      width/2,
+      height/2
+    );
     return;
   }
 
@@ -743,18 +1013,26 @@ function drawChart() {
   const padding = 25;
 
   ctx.strokeStyle = border;
+
   for (let i=0;i<4;i++) {
     const y = padding+(height-padding*2)*i/3;
+
     ctx.beginPath();
     ctx.moveTo(padding,y);
     ctx.lineTo(width-padding,y);
     ctx.stroke();
   }
 
-  const x = i => padding+(width-padding*2)*(points.length===1 ? 0 : i/(points.length-1));
-  const y = v => height-padding-(v-min)/range*(height-padding*2);
+  const x = i =>
+    padding+(width-padding*2)*
+    (points.length===1 ? 0 : i/(points.length-1));
+
+  const y = v =>
+    height-padding-
+    (v-min)/range*(height-padding*2);
 
   ctx.beginPath();
+
   points.forEach((p,i) => {
     if (i===0) ctx.moveTo(x(i),y(p.value));
     else ctx.lineTo(x(i),y(p.value));
@@ -766,38 +1044,133 @@ function drawChart() {
 
   ctx.fillStyle = muted;
   ctx.font = "11px Arial";
+
   ctx.textAlign = "left";
   ctx.fillText(money(min),padding,height-4);
+
   ctx.textAlign = "right";
   ctx.fillText(money(max),width-padding,12);
 }
 
+/* =========================
+   CASH NOTE COUNTER
+========================= */
+
 function renderNotes() {
-  document.getElementById("noteGrid").innerHTML = NOTE_VALUES.map(value => `
-    <div class="note">
-      <strong>${value.toLocaleString("en-LK")}</strong>
-      <input type="number" min="0" step="1" data-note="${value}"
-        value="${number(data.notes[value])}">
-    </div>
-  `).join("");
+  document.getElementById("noteGrid").innerHTML =
+    NOTE_VALUES.map(value => `
+      <div class="note">
+        <strong>${value.toLocaleString("en-LK")}</strong>
+
+        <input
+          type="number"
+          min="0"
+          step="1"
+          data-note="${value}"
+          value="${number(data.notes[value])}"
+        >
+      </div>
+    `).join("");
 
   updateNoteTotal();
 }
 
+function getNoteTotal() {
+  return NOTE_VALUES.reduce((sum,value) =>
+    sum + value*number(data.notes[value]),0
+  );
+}
+
 function updateNoteTotal() {
-  const total = NOTE_VALUES.reduce((sum,value) =>
-    sum + value * number(data.notes[value]), 0
+  document.getElementById("noteTotal").textContent =
+    money(getNoteTotal());
+}
+
+/*
+  Cash note count is a special balance adjustment.
+
+  It sets the cash account to the actual counted amount.
+  It does not count as income or expense.
+*/
+
+document.getElementById("noteGrid").addEventListener("input",event => {
+  const input = event.target.closest("[data-note]");
+  if (!input) return;
+
+  data.notes[input.dataset.note] = Math.max(
+    0,
+    Math.floor(number(input.value))
   );
 
-  document.getElementById("noteTotal").textContent = money(total);
+  const total = getNoteTotal();
+
+  let adjustment = data.transactions.find(
+    tx => tx.id === "cash-note-count"
+  );
+
+  if (!adjustment) {
+    adjustment = {
+      id:"cash-note-count",
+      type:"adjustment",
+      amount:total,
+      account:"cash",
+      toAccount:"",
+      category:"Cash count",
+      description:"Cash note count",
+      date:today(),
+      created:Date.now()
+    };
+
+    data.transactions.push(adjustment);
+
+  } else {
+    adjustment.amount = total;
+    adjustment.date = today();
+    adjustment.created = Date.now();
+  }
+
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(data)
+    );
+  } catch(error) {
+    console.error("Cash counter save error:",error);
+    alert("Could not save the cash count.");
+    return;
+  }
+
+  updateNoteTotal();
+  renderBalances();
+  renderSummary();
+  renderTransactions();
+  drawChart();
+});
+
+function clearNotes() {
+  if (!confirm("Clear all cash note counts?")) return;
+
+  data.notes = {};
+
+  data.transactions = data.transactions.filter(
+    tx => tx.id !== "cash-note-count"
+  );
+
+  saveData();
 }
+
+/* =========================
+   APPEARANCE
+========================= */
 
 function renderAppearance() {
   document.body.classList.remove("light");
 
   if (data.settings.theme === "light") {
     document.body.classList.add("light");
-  } else if (data.settings.theme === "system") {
+  }
+
+  else if (data.settings.theme === "system") {
     document.body.classList.toggle(
       "light",
       window.matchMedia("(prefers-color-scheme: light)").matches
@@ -805,19 +1178,31 @@ function renderAppearance() {
   }
 
   document.documentElement.style.setProperty(
-    "--accent",data.settings.accent || "#72a7ff"
+    "--accent",
+    data.settings.accent || "#72a7ff"
   );
 
-  const name = data.settings.name || "My Wallet";
+  const name =
+    data.settings.name || "My Wallet";
+
   document.getElementById("appTitle").textContent = name;
   document.title = name;
 
-  document.getElementById("themeMode").value = data.settings.theme;
-  document.getElementById("accentColor").value = data.settings.accent;
+  document.getElementById("themeMode").value =
+    data.settings.theme;
+
+  document.getElementById("accentColor").value =
+    data.settings.accent;
+
   document.getElementById("customName").value = name;
+
   document.getElementById("quickTheme").textContent =
     data.settings.theme === "light" ? "☾" : "☼";
 }
+
+/* =========================
+   DASHBOARD CUSTOMIZATION
+========================= */
 
 function renderDashboardOptions() {
   const names = {
@@ -833,8 +1218,11 @@ function renderDashboardOptions() {
   document.getElementById("dashboardOptions").innerHTML =
     Object.entries(names).map(([key,label]) => `
       <label class="dashboard-option">
-        <input type="checkbox" data-dashboard="${key}"
-          ${data.dashboard[key] !== false ? "checked" : ""}>
+        <input
+          type="checkbox"
+          data-dashboard="${key}"
+          ${data.dashboard[key] !== false ? "checked" : ""}
+        >
         ${label}
       </label>
     `).join("");
@@ -847,6 +1235,10 @@ function renderDashboardOptions() {
   });
 }
 
+/* =========================
+   MAIN RENDER
+========================= */
+
 function render() {
   renderAppearance();
   renderBalances();
@@ -857,49 +1249,101 @@ function render() {
   drawChart();
 }
 
+/* =========================
+   NAVIGATION
+========================= */
+
 function showPage(page) {
   document.querySelectorAll(".page").forEach(section => {
-    section.classList.toggle("hidden",section.id !== page);
+    section.classList.toggle(
+      "hidden",
+      section.id !== page
+    );
   });
 
   document.querySelectorAll("nav button").forEach(button => {
-    button.classList.toggle("active",button.dataset.page === page);
+    button.classList.toggle(
+      "active",
+      button.dataset.page === page
+    );
   });
 
-  if (page === "dashboard") requestAnimationFrame(drawChart);
+  if (page === "dashboard") {
+    requestAnimationFrame(drawChart);
+  }
 }
 
 document.querySelectorAll("nav button").forEach(button => {
-  button.addEventListener("click",() => showPage(button.dataset.page));
+  button.addEventListener("click",() => {
+    showPage(button.dataset.page);
+  });
 });
 
+/* =========================
+   TRANSACTION FORM
+========================= */
+
 function openTransaction(type="income",id="") {
-  const existing = id ? data.transactions.find(tx => tx.id === id) : null;
+  const existing = id
+    ? data.transactions.find(tx => tx.id === id)
+    : null;
+
+  if (existing && existing.id === "cash-note-count") {
+    alert("Edit the cash balance using the Cash notes counter.");
+    return;
+  }
 
   document.getElementById("transactionForm").reset();
-  document.getElementById("editId").value = existing ? existing.id : "";
-  document.getElementById("transactionType").value = existing ? existing.type : type;
-  document.getElementById("amount").value = existing ? existing.amount : "";
-  document.getElementById("account").value = existing ? existing.account : "cash";
-  document.getElementById("transferTo").value = existing ? existing.toAccount : "bank";
-  document.getElementById("category").value = existing ? existing.category : "";
-  document.getElementById("description").value = existing ? existing.description : "";
-  document.getElementById("date").value = existing ? existing.date : today();
+
+  document.getElementById("editId").value =
+    existing ? existing.id : "";
+
+  document.getElementById("transactionType").value =
+    existing ? existing.type : type;
+
+  document.getElementById("amount").value =
+    existing ? existing.amount : "";
+
+  document.getElementById("account").value =
+    existing ? existing.account : "cash";
+
+  document.getElementById("transferTo").value =
+    existing ? existing.toAccount : "bank";
+
+  document.getElementById("category").value =
+    existing ? existing.category : "";
+
+  document.getElementById("description").value =
+    existing ? existing.description : "";
+
+  document.getElementById("date").value =
+    existing ? existing.date : today();
 
   document.getElementById("dialogTitle").textContent =
     existing ? "Edit transaction" : "Add "+type;
 
   updateTransactionFields();
+
   document.getElementById("transactionDialog").showModal();
 }
 
 function updateTransactionFields() {
-  const type = document.getElementById("transactionType").value;
-  document.getElementById("transferField").classList.toggle("hidden",type !== "transfer");
-  document.getElementById("adjustmentHint").classList.toggle("hidden",type !== "adjustment");
+  const type =
+    document.getElementById("transactionType").value;
+
+  document.getElementById("transferField").classList.toggle(
+    "hidden",
+    type !== "transfer"
+  );
+
+  document.getElementById("adjustmentHint").classList.toggle(
+    "hidden",
+    type !== "adjustment"
+  );
 }
 
-document.getElementById("transactionType").addEventListener("change",updateTransactionFields);
+document.getElementById("transactionType")
+  .addEventListener("change",updateTransactionFields);
 
 function closeTransaction() {
   document.getElementById("transactionDialog").close();
@@ -910,18 +1354,36 @@ function editTransaction(id) {
 }
 
 function deleteTransaction(id) {
+  if (id === "cash-note-count") {
+    alert("Use Clear counts in the Cash notes section to remove this count.");
+    return;
+  }
+
   if (!confirm("Delete this transaction?")) return;
-  data.transactions = data.transactions.filter(tx => tx.id !== id);
+
+  data.transactions = data.transactions.filter(
+    tx => tx.id !== id
+  );
+
   saveData();
 }
 
-document.getElementById("transactionForm").addEventListener("submit",event => {
+document.getElementById("transactionForm")
+  .addEventListener("submit",event => {
+
   event.preventDefault();
 
-  const type = document.getElementById("transactionType").value;
-  const amount = number(document.getElementById("amount").value);
-  const account = document.getElementById("account").value;
-  const toAccount = document.getElementById("transferTo").value;
+  const type =
+    document.getElementById("transactionType").value;
+
+  const amount =
+    number(document.getElementById("amount").value);
+
+  const account =
+    document.getElementById("account").value;
+
+  const toAccount =
+    document.getElementById("transferTo").value;
 
   if (amount <= 0) {
     alert("Enter an amount greater than zero.");
@@ -933,8 +1395,11 @@ document.getElementById("transactionForm").addEventListener("submit",event => {
     return;
   }
 
-  const id = document.getElementById("editId").value;
-  const old = data.transactions.find(tx => tx.id === id);
+  const id =
+    document.getElementById("editId").value;
+
+  const old =
+    data.transactions.find(tx => tx.id === id);
 
   const transaction = {
     id:id || makeId(),
@@ -954,8 +1419,14 @@ document.getElementById("transactionForm").addEventListener("submit",event => {
   }
 
   if (id) {
-    const index = data.transactions.findIndex(tx => tx.id === id);
-    if (index >= 0) data.transactions[index] = transaction;
+    const index = data.transactions.findIndex(
+      tx => tx.id === id
+    );
+
+    if (index >= 0) {
+      data.transactions[index] = transaction;
+    }
+
   } else {
     data.transactions.push(transaction);
   }
@@ -964,87 +1435,28 @@ document.getElementById("transactionForm").addEventListener("submit",event => {
   saveData();
 });
 
-document.getElementById("searchTransactions").addEventListener("input",renderTransactions);
-document.getElementById("filterType").addEventListener("change",renderTransactions);
-document.getElementById("graphPeriod").addEventListener("change",drawChart);
+/* =========================
+   SEARCH AND FILTERS
+========================= */
+
+document.getElementById("searchTransactions")
+  .addEventListener("input",renderTransactions);
+
+document.getElementById("filterType")
+  .addEventListener("change",renderTransactions);
+
+document.getElementById("graphPeriod")
+  .addEventListener("change",drawChart);
+
 window.addEventListener("resize",drawChart);
 
-document.getElementById("noteGrid").addEventListener("input", event => {
-  const input = event.target.closest("[data-note]");
-  if (!input) return;
+/* =========================
+   DASHBOARD OPTIONS
+========================= */
 
-  data.notes[input.dataset.note] = Math.max(
-    0,
-    Math.floor(number(input.value))
-  );
+document.getElementById("dashboardOptions")
+  .addEventListener("change",event => {
 
-  const total = NOTE_VALUES.reduce((sum, value) =>
-    sum + value * number(data.notes[value]), 0
-  );
-
-  let adjustment = data.transactions.find(
-    tx => tx.id === "cash-note-count"
-  );
-
-  if (!adjustment) {
-    adjustment = {
-      id: "cash-note-count",
-      type: "adjustment",
-      amount: total,
-      account: "cash",
-      toAccount: "",
-      category: "Cash count",
-      description: "Cash note count",
-      date: today(),
-      created: Date.now()
-    };
-
-    data.transactions.push(adjustment);
-  } else {
-    adjustment.amount = total;
-    adjustment.date = today();
-    adjustment.created = Date.now();
-  }
-
-  // Save without refreshing the input fields.
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  console.log("Cash count adjustment:",
-  data.transactions.find(tx => tx.id === "cash-note-count")
-);
-
-console.log("Calculated balances:", balances());
-
-  updateNoteTotal();
-  renderBalances();
-  renderSummary();
-  renderTransactions();
-  drawChart();
-});
-
-function clearNotes() {
-  if (!confirm("Clear all cash note counts?")) return;
-
-  data.notes = {};
-
-  data.transactions = data.transactions.filter(
-    tx => tx.id !== "cash-note-count"
-  );
-
-  saveData();
-} {
-  if (!confirm("Clear all cash note counts?")) return;
-
-  data.notes = {};
-
-  // Remove the cash-count adjustment.
-  data.transactions = data.transactions.filter(
-    tx => tx.id !== "cash-note-count"
-  );
-
-  saveData();
-}
-
-document.getElementById("dashboardOptions").addEventListener("change",event => {
   const key = event.target.dataset.dashboard;
   if (!key) return;
 
@@ -1052,25 +1464,41 @@ document.getElementById("dashboardOptions").addEventListener("change",event => {
   saveData();
 });
 
+/* =========================
+   SETTINGS
+========================= */
+
 function saveAppearance() {
-  data.settings.theme = document.getElementById("themeMode").value;
-  data.settings.accent = document.getElementById("accentColor").value;
+  data.settings.theme =
+    document.getElementById("themeMode").value;
+
+  data.settings.accent =
+    document.getElementById("accentColor").value;
+
   data.settings.name =
-    document.getElementById("customName").value.trim() || "My Wallet";
+    document.getElementById("customName").value.trim() ||
+    "My Wallet";
 
   saveData();
+
   alert("Appearance settings saved.");
 }
 
-document.getElementById("quickTheme").addEventListener("click",() => {
+document.getElementById("quickTheme")
+  .addEventListener("click",() => {
+
   data.settings.theme =
     data.settings.theme === "light" ? "dark" : "light";
+
   saveData();
 });
 
 function saveOpeningBalances() {
-  const cash = number(document.getElementById("openingCash").value);
-  const bank = number(document.getElementById("openingBank").value);
+  const cash =
+    number(document.getElementById("openingCash").value);
+
+  const bank =
+    number(document.getElementById("openingBank").value);
 
   if (cash < 0 || bank < 0) {
     alert("Balances cannot be negative.");
@@ -1080,8 +1508,13 @@ function saveOpeningBalances() {
   if (!confirm("Save these opening balances?")) return;
 
   data.opening = {cash,bank};
+
   saveData();
 }
+
+/* =========================
+   BACKUP AND RESTORE
+========================= */
 
 function exportBackup() {
   const backup = {
@@ -1097,13 +1530,18 @@ function exportBackup() {
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
+
   link.href = url;
   link.download = "my-wallet-backup-"+today()+".json";
+
   link.click();
-  URL.revokeObjectURL(url);
+
+  setTimeout(() => URL.revokeObjectURL(url),1000);
 }
 
-document.getElementById("importFile").addEventListener("change",async event => {
+document.getElementById("importFile")
+  .addEventListener("change",async event => {
+
   const file = event.target.files[0];
   if (!file) return;
 
@@ -1111,26 +1549,52 @@ document.getElementById("importFile").addEventListener("change",async event => {
     const parsed = JSON.parse(await file.text());
     const incoming = parsed.data || parsed;
 
-    if (!incoming || !Array.isArray(incoming.transactions) || !incoming.opening) {
+    if (
+      !incoming ||
+      !Array.isArray(incoming.transactions) ||
+      !incoming.opening
+    ) {
       throw new Error("Invalid backup");
     }
 
-    if (!confirm("Restore this backup? Current wallet data will be replaced.")) return;
+    if (!confirm(
+      "Restore this backup? Current wallet data will be replaced."
+    )) return;
 
     const base = defaults();
+
     data = {
       ...base,
       ...incoming,
-      opening:{...base.opening,...incoming.opening},
-      settings:{...base.settings,...incoming.settings},
-      dashboard:{...base.dashboard,...incoming.dashboard},
-      notes:{...incoming.notes},
+
+      opening:{
+        ...base.opening,
+        ...incoming.opening
+      },
+
+      settings:{
+        ...base.settings,
+        ...incoming.settings
+      },
+
+      dashboard:{
+        ...base.dashboard,
+        ...incoming.dashboard
+      },
+
+      notes:{
+        ...base.notes,
+        ...incoming.notes
+      },
+
       transactions:incoming.transactions
     };
 
     saveData();
     alert("Backup restored.");
-  } catch {
+
+  } catch(error) {
+    console.error(error);
     alert("Invalid backup file.");
   }
 
@@ -1138,11 +1602,17 @@ document.getElementById("importFile").addEventListener("change",async event => {
 });
 
 function resetWallet() {
-  if (!confirm("Delete all wallet data from this browser?")) return;
+  if (!confirm(
+    "Delete all wallet data from this browser?"
+  )) return;
 
   data = defaults();
   saveData();
 }
+
+/* =========================
+   PWA INSTALLATION
+========================= */
 
 window.addEventListener("beforeinstallprompt",event => {
   event.preventDefault();
@@ -1154,35 +1624,60 @@ async function installApp() {
     installPrompt.prompt();
     await installPrompt.userChoice;
     installPrompt = null;
+
   } else {
-    alert("If installation is supported, open your browser menu and choose Install app or Add to Home screen.");
+    alert(
+      "If installation is supported, open your browser menu and choose Install app or Add to Home screen."
+    );
   }
 }
 
 window.addEventListener("appinstalled",() => {
   installPrompt = null;
-  document.getElementById("downloadFloat").classList.remove("visible");
+
+  document.getElementById("downloadFloat")
+    .classList.remove("visible");
 });
 
+/* =========================
+   FLOATING DOWNLOAD BUTTON
+========================= */
+
 window.addEventListener("scroll",() => {
-  const button = document.getElementById("downloadFloat");
+  const button =
+    document.getElementById("downloadFloat");
+
   button.classList.add("visible");
 
   clearTimeout(scrollTimer);
+
   scrollTimer = setTimeout(() => {
     button.classList.remove("visible");
   },2000);
+
 },{passive:true});
 
+/* =========================
+   SERVICE WORKER
+========================= */
+
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
+  window.addEventListener("load",() => {
     navigator.serviceWorker.register("./sw.js")
       .then(() => console.log("Service worker registered"))
-      .catch(error => console.error("Service worker error:", error));
+      .catch(error => {
+        console.error("Service worker error:",error);
+      });
   });
 }
-  render();
+
+/* =========================
+   START APPLICATION
+========================= */
+
+render();
 showPage("dashboard");
+
 </script>
 
 </body>
