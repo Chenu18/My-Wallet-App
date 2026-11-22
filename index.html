@@ -795,17 +795,6 @@ function renderBalances() {
   document.getElementById("openingEzcash").value =
     data.opening.ezcash;
 
-  document.getElementById("bankBalance").textContent =
-    money(b.bank);
-
-  document.getElementById("totalBalance").textContent =
-    money(b.cash+b.bank);
-
-  document.getElementById("openingCash").value =
-    data.opening.cash;
-
-  document.getElementById("openingBank").value =
-    data.opening.bank;
 }
 
 function renderSummary() {
