@@ -708,12 +708,12 @@ function today() {
 
 function balances() {
   const result = {
-    cash:number(data.opening.cash),
-    bank:number(data.opening.bank),
-    ezcash:number(data.opening.ezcash)
+    cash: number(data.opening.cash),
+    bank: number(data.opening.bank),
+    ezcash: number(data.opening.ezcash)
   };
 
-  const accounts = ["cash","bank","ezcash"];
+  const accounts = ["cash", "bank", "ezcash"];
   const currentDate = today();
 
   const sorted = [...data.transactions]
@@ -722,9 +722,9 @@ function balances() {
         tx.date <= currentDate &&
         accounts.includes(tx.account);
     })
-    .sort((a,b) =>
+    .sort((a, b) =>
       (a.date || "").localeCompare(b.date || "") ||
-      number(a.created)-number(b.created)
+      number(a.created) - number(b.created)
     );
 
   sorted.forEach(tx => {
@@ -732,68 +732,19 @@ function balances() {
 
     if (tx.type === "income") {
       result[tx.account] += amount;
-    }
-
-    else if (tx.type === "expense") {
+    } else if (tx.type === "expense") {
       result[tx.account] -= amount;
-    }
-
-    else if (tx.type === "transfer") {
+    } else if (tx.type === "transfer") {
       if (!accounts.includes(tx.toAccount)) return;
 
       result[tx.account] -= amount;
       result[tx.toAccount] += amount;
-    }
+  } else if (tx.type === "adjustment") {
+    result[tx.account] = amount;
+  }
+});
 
-    else if (tx.type === "adjustment") {
-      result[tx.account] = amount;
-    }
-  });
-
-  return result;
-}
-  const result = {
-    cash:number(data.opening.cash),
-    bank:number(data.opening.bank)
-  };
-
-  const currentDate = today();
-
-  const sorted = [...data.transactions]
-    .filter(tx => {
-      return tx.date &&
-        tx.date <= currentDate &&
-        ["cash","bank"].includes(tx.account);
-    })
-    .sort((a,b) =>
-      (a.date || "").localeCompare(b.date || "") ||
-      number(a.created)-number(b.created)
-    );
-
-  sorted.forEach(tx => {
-    const amount = number(tx.amount);
-
-    if (tx.type === "income") {
-      result[tx.account] += amount;
-    }
-
-    else if (tx.type === "expense") {
-      result[tx.account] -= amount;
-    }
-
-    else if (tx.type === "transfer") {
-      if (!["cash","bank","ezcash"].includes(tx.toAccount)) return;
-
-      result[tx.account] -= amount;
-      result[tx.toAccount] += amount;
-    }
-
-    else if (tx.type === "adjustment") {
-      result[tx.account] = amount;
-    }
-  });
-
-  return result;
+return result;
 }
 
 /* =========================
