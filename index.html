@@ -703,6 +703,7 @@ function today() {
   return `${year}-${month}-${day}`;
 }
 
+
 /* =========================
    BALANCE CALCULATION
 ========================= */
@@ -716,32 +717,6 @@ function balances() {
 
   const accounts = ["cash", "bank", "ezcash"];
   const currentDate = today();
-
-
-      (a.date || "").localeCompare(b.date || "") ||
-      number(a.created) - number(b.created)
-    );
-
-  sorted.forEach(tx => {
-    const amount = number(tx.amount);
-
-    if (tx.type === "income") {
-      result[tx.account] += amount;
-    } else if (tx.type === "expense") {
-      result[tx.account] -= amount;
-    } else if (tx.type === "transfer") {
-      if (!accounts.includes(tx.toAccount)) return;
-
-      result[tx.account] -= amount;
-      result[tx.toAccount] += amount;
-    } else if (tx.type === "adjustment") {
-      result[tx.account] = amount;
-    }
-  });
-
-  return result;
-}
-
 
   const sorted = [...data.transactions]
     .filter(tx => {
@@ -773,6 +748,7 @@ function balances() {
 
   return result;
 }
+
 
 /* =========================
    DASHBOARD
