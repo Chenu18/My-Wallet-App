@@ -592,10 +592,11 @@ const defaults = () => ({
     name:"My Wallet"
   },
   dashboard:{
-    total:true,
-    cash:true,
-    bank:true,
-    actions:true,
+  total:true,
+  cash:true,
+  bank:true,
+  ezcash:true,
+  actions:true,
     graph:true,
     summary:true,
     recent:true
@@ -725,6 +726,25 @@ function balances() {
     .sort((a, b) =>
       (a.date || "").localeCompare(b.date || "") ||
       number(a.created) - number(b.created)
+function balances() {
+  const result = {
+    cash: number(data.opening.cash),
+    bank: number(data.opening.bank),
+    ezcash: number(data.opening.ezcash)
+  };
+
+  const accounts = ["cash", "bank", "ezcash"];
+  const currentDate = today();
+
+  const sorted = [...data.transactions]
+    .filter(tx => {
+      return tx.date &&
+        tx.date <= currentDate &&
+        accounts.includes(tx.account);
+    })
+    .sort((a, b) =>
+      (a.date || "").localeCompare(b.date || "") ||
+      number(a.created) - number(b.created)
     );
 
   sorted.forEach(tx => {
@@ -739,12 +759,12 @@ function balances() {
 
       result[tx.account] -= amount;
       result[tx.toAccount] += amount;
-  } else if (tx.type === "adjustment") {
-    result[tx.account] = amount;
-  }
-});
+    } else if (tx.type === "adjustment") {
+      result[tx.account] = amount;
+    }
+  });
 
-return result;
+  return result;
 }
 
 /* =========================
@@ -774,11 +794,6 @@ function renderBalances() {
 
   document.getElementById("openingEzcash").value =
     data.opening.ezcash;
-}
-  const b = balances();
-
-  document.getElementById("cashBalance").textContent =
-    money(b.cash);
 
   document.getElementById("bankBalance").textContent =
     money(b.bank);
@@ -967,7 +982,7 @@ function historyPoints(days) {
 
     sorted.forEach(tx => {
       if ((tx.date || "") > key) return;
-      if (!["cash","bank"].includes(tx.account)) return;
+      if (!["cash","bank","ezcash"].includes(tx.account)) return;
 
       const amount = number(tx.amount);
 
@@ -1559,24 +1574,7 @@ function saveOpeningBalances() {
 
   saveData();
 }
-  const cash =
-    number(document.getElementById("openingCash").value);
-
-  const bank =
-    number(document.getElementById("openingBank").value);
-
-  if (cash < 0 || bank < 0) {
-    alert("Balances cannot be negative.");
-    return;
-  }
-
-  if (!confirm("Save these opening balances?")) return;
-
-  data.opening = {cash,bank};
-
-  saveData();
-}
-
+  
 /* =========================
    BACKUP AND RESTORE
 ========================= */
