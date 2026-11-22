@@ -10,6 +10,24 @@
 <link rel="manifest" href="./manifest.json">
 
 <style>
+  .download-app-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 18px;
+  z-index: 9999;
+  background: var(--accent);
+  color: #101216;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 20px;
+  font-weight: bold;
+  box-shadow: 0 5px 20px #0005;
+  display: none;
+}
+
+.download-app-btn.show {
+  display: block;
+}
 :root {
   --bg:#101216;
   --panel:#191d24;
@@ -1295,6 +1313,55 @@ if ("serviceWorker" in navigator) {
     });
   });
 }
+  /* DOWNLOAD / INSTALL BUTTON */
+
+let installPrompt = null;
+
+const downloadBtn = document.getElementById("downloadAppBtn");
+
+let appInstalled =
+  window.matchMedia("(display-mode: standalone)").matches ||
+  window.navigator.standalone === true;
+
+function updateDownloadButton() {
+  const scrolledDown = window.scrollY > 150;
+
+  if (scrolledDown && !appInstalled && installPrompt) {
+    downloadBtn.classList.add("show");
+  } else {
+    downloadBtn.classList.remove("show");
+  }
+}
+
+window.addEventListener("scroll", updateDownloadButton);
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  installPrompt = event;
+  updateDownloadButton();
+});
+
+downloadBtn.addEventListener("click", async () => {
+  if (!installPrompt) return;
+
+  installPrompt.prompt();
+
+  const result = await installPrompt.userChoice;
+
+  if (result.outcome === "accepted") {
+    downloadBtn.classList.remove("show");
+  }
+
+  installPrompt = null;
+});
+
+window.addEventListener("appinstalled", () => {
+  appInstalled = true;
+  downloadBtn.classList.remove("show");
+});
 </script>
+  <button id="downloadAppBtn" class="download-app-btn">
+  ↓ Download My Wallet
+</button>
 </body>
 </html>
