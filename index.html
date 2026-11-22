@@ -311,7 +311,7 @@ dialog::backdrop { background:#000b; }
     <div class="card col-4 dashboard-card" data-card="total">
       <h3>Total balance</h3>
       <div class="balance" id="totalBalance">LKR 0.00</div>
-      <span class="muted small">Cash + Bank</span>
+      <span class="muted small">Cash + Bank + eZ Cash</span>
     </div>
 
     <div class="card col-4 dashboard-card" data-card="cash">
@@ -323,6 +323,10 @@ dialog::backdrop { background:#000b; }
       <h3>Bank balance</h3>
       <div class="balance" id="bankBalance">LKR 0.00</div>
     </div>
+    <div class="card col-4 dashboard-card" data-card="ezcash">
+  <h3>eZ Cash balance</h3>
+  <div class="balance" id="ezcashBalance">LKR 0.00</div>
+</div>
 
     <div class="card col-12 dashboard-card" data-card="actions">
       <h2>Quick actions</h2>
@@ -456,6 +460,10 @@ dialog::backdrop { background:#000b; }
           <label>Bank balance (LKR)</label>
           <input type="number" id="openingBank" min="0" step="0.01">
         </div>
+        <div class="field">
+  <label>eZ Cash balance (LKR)</label>
+  <input type="number" id="openingEzcash" min="0" step="0.01">
+</div>
       </div>
 
       <button class="primary" onclick="saveOpeningBalances()">Save balances</button>
@@ -521,17 +529,19 @@ dialog::backdrop { background:#000b; }
       <div class="field">
         <label>Account</label>
         <select id="account">
-          <option value="cash">Cash</option>
-          <option value="bank">Bank</option>
-        </select>
+  <option value="cash">Cash</option>
+  <option value="bank">Bank</option>
+  <option value="ezcash">eZ Cash</option>
+</select>
       </div>
 
       <div class="field hidden" id="transferField">
         <label>Transfer to</label>
         <select id="transferTo">
-          <option value="bank">Bank</option>
-          <option value="cash">Cash</option>
-        </select>
+  <option value="cash">Cash</option>
+  <option value="bank">Bank</option>
+  <option value="ezcash">eZ Cash</option>
+</select>
       </div>
 
       <div class="field">
@@ -574,7 +584,7 @@ const STORAGE_KEY = "my_wallet_complete_v1";
 const NOTE_VALUES = [5000,2000,1000,500,100,50,20];
 
 const defaults = () => ({
-  opening:{cash:0,bank:0},
+  opening:{cash:0,bank:0,ezcash:0},
   transactions:[],
   settings:{
     theme:"dark",
@@ -699,6 +709,51 @@ function today() {
 function balances() {
   const result = {
     cash:number(data.opening.cash),
+    bank:number(data.opening.bank),
+    ezcash:number(data.opening.ezcash)
+  };
+
+  const accounts = ["cash","bank","ezcash"];
+  const currentDate = today();
+
+  const sorted = [...data.transactions]
+    .filter(tx => {
+      return tx.date &&
+        tx.date <= currentDate &&
+        accounts.includes(tx.account);
+    })
+    .sort((a,b) =>
+      (a.date || "").localeCompare(b.date || "") ||
+      number(a.created)-number(b.created)
+    );
+
+  sorted.forEach(tx => {
+    const amount = number(tx.amount);
+
+    if (tx.type === "income") {
+      result[tx.account] += amount;
+    }
+
+    else if (tx.type === "expense") {
+      result[tx.account] -= amount;
+    }
+
+    else if (tx.type === "transfer") {
+      if (!accounts.includes(tx.toAccount)) return;
+
+      result[tx.account] -= amount;
+      result[tx.toAccount] += amount;
+    }
+
+    else if (tx.type === "adjustment") {
+      result[tx.account] = amount;
+    }
+  });
+
+  return result;
+}
+  const result = {
+    cash:number(data.opening.cash),
     bank:number(data.opening.bank)
   };
 
@@ -727,7 +782,7 @@ function balances() {
     }
 
     else if (tx.type === "transfer") {
-      if (!["cash","bank"].includes(tx.toAccount)) return;
+      if (!["cash","bank","ezcash"].includes(tx.toAccount)) return;
 
       result[tx.account] -= amount;
       result[tx.toAccount] += amount;
@@ -746,6 +801,29 @@ function balances() {
 ========================= */
 
 function renderBalances() {
+  const b = balances();
+
+  document.getElementById("cashBalance").textContent =
+    money(b.cash);
+
+  document.getElementById("bankBalance").textContent =
+    money(b.bank);
+
+  document.getElementById("ezcashBalance").textContent =
+    money(b.ezcash);
+
+  document.getElementById("totalBalance").textContent =
+    money(b.cash+b.bank+b.ezcash);
+
+  document.getElementById("openingCash").value =
+    data.opening.cash;
+
+  document.getElementById("openingBank").value =
+    data.opening.bank;
+
+  document.getElementById("openingEzcash").value =
+    data.opening.ezcash;
+}
   const b = balances();
 
   document.getElementById("cashBalance").textContent =
@@ -817,9 +895,19 @@ function transactionHTML(tx) {
   const typeName =
     tx.type.charAt(0).toUpperCase()+tx.type.slice(1);
 
-  const label = tx.type === "transfer"
-    ? "Transfer · " + tx.account + " to " + tx.toAccount
-    : typeName + (tx.category ? " · " + tx.category : "");
+  const accountNames = {
+  cash:"Cash",
+  bank:"Bank",
+  ezcash:"eZ Cash"
+};
+
+const label = tx.type === "transfer"
+    ? "Transfer · " +
+      accountNames[tx.account] + " to " +
+      accountNames[tx.toAccount]
+    : typeName + " · " +
+      (accountNames[tx.account] || tx.account) +
+      (tx.category ? " · " + tx.category : "");
 
   return `
     <div class="transaction">
@@ -921,9 +1009,10 @@ function historyPoints(days) {
       String(date.getDate()).padStart(2,"0");
 
     const b = {
-      cash:number(data.opening.cash),
-      bank:number(data.opening.bank)
-    };
+  cash:number(data.opening.cash),
+  bank:number(data.opening.bank),
+  ezcash:number(data.opening.ezcash)
+};
 
     sorted.forEach(tx => {
       if ((tx.date || "") > key) return;
@@ -940,7 +1029,7 @@ function historyPoints(days) {
       }
 
       if (tx.type === "transfer") {
-        if (!["cash","bank"].includes(tx.toAccount)) return;
+        if (!["cash","bank","ezcash"].includes(tx.toAccount)) return;
 
         b[tx.account] -= amount;
         b[tx.toAccount] += amount;
@@ -953,7 +1042,7 @@ function historyPoints(days) {
 
     points.push({
       date:key,
-      value:b.cash+b.bank
+     value:b.cash+b.bank+b.ezcash
     });
   }
 
@@ -1205,11 +1294,12 @@ function renderAppearance() {
 ========================= */
 
 function renderDashboardOptions() {
-  const names = {
-    total:"Total balance",
-    cash:"Cash balance",
-    bank:"Bank balance",
-    actions:"Quick actions",
+ const names = {
+  total:"Total balance",
+  cash:"Cash balance",
+  bank:"Bank balance",
+  ezcash:"eZ Cash balance",
+  actions:"Quick actions",
     graph:"Balance history",
     summary:"Monthly summary",
     recent:"Recent transactions"
@@ -1494,6 +1584,30 @@ document.getElementById("quickTheme")
 });
 
 function saveOpeningBalances() {
+  const cash =
+    number(document.getElementById("openingCash").value);
+
+  const bank =
+    number(document.getElementById("openingBank").value);
+
+  const ezcash =
+    number(document.getElementById("openingEzcash").value);
+
+  if (cash < 0 || bank < 0 || ezcash < 0) {
+    alert("Balances cannot be negative.");
+    return;
+  }
+
+  if (!confirm("Save these opening balances?")) return;
+
+  data.opening = {
+    cash,
+    bank,
+    ezcash
+  };
+
+  saveData();
+}
   const cash =
     number(document.getElementById("openingCash").value);
 
